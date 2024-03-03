@@ -1,1 +1,7 @@
-export { Stack as default } from "expo-router";
+import { Stack } from "expo-router";
+
+const AccountLayout = () => {
+  return <Stack initialRouteName="login" />;
+};
+
+export default AccountLayout;

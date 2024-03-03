@@ -1,0 +1,13 @@
+diff --git a/build/ExpoRoot.js b/build/ExpoRoot.js
+index 7db529d12300f39b7c17995f325c6cd6c8ca75ef..a9e9969c9c7c1ffeb6f4cffd1115d0b7ddd46b82 100644
+--- a/build/ExpoRoot.js
++++ b/build/ExpoRoot.js
+@@ -57,7 +57,7 @@ function ExpoRoot({ wrapper: ParentWrapper = react_1.Fragment, ...props }) {
+         initialMetrics={INITIAL_METRICS}>
+           {children}
+           {/* Users can override this by adding another StatusBar element anywhere higher in the component tree. */}
+-          {!hasViewControllerBasedStatusBarAppearance && <expo_status_bar_1.StatusBar style="auto"/>}
++          {/* !hasViewControllerBasedStatusBarAppearance && <expo_status_bar_1.StatusBar style="auto"/> */}
+         </react_native_safe_area_context_1.SafeAreaProvider>
+       </ParentWrapper>);
+     };

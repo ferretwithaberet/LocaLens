@@ -14,14 +14,33 @@
       "backgroundColor": "#ffffff"
     },
     "android": {
+      "package": "com.localens.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "ios": {
+      "bundleIdentifier": "com.localens.app",
       "supportsTablet": true
     },
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f5226088-4715-4e30-9c20-31d600463866"
+      }
+    }
   }
 }
