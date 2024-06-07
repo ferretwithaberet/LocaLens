@@ -14,6 +14,9 @@
       "backgroundColor": "#ffffff"
     },
     "android": {
+      "config": {
+        "googleMaps": { "apiKey": "AIzaSyCwxPdidtNaYpD00kkNm_c_DwBF7T4UGbo" }
+      },
       "package": "com.localens.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

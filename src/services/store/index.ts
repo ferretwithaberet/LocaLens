@@ -2,31 +2,45 @@ import { useState, useEffect } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Localization from "expo-localization";
+import { TokenResponseConfig } from "expo-auth-session";
+
+import { tokensToConfig, revokeTokens } from "@/services/auth";
 
 type StoreData = {
-  language: string;
+  tokens: TokenResponseConfig | null;
 };
 
 type StoreActions = {
-  setLanguage: (language: string) => void;
+  login: (tokens: TokenResponseConfig) => void;
+  logout: () => void;
 };
 
 type StoreState = StoreData & StoreActions;
 
-const PERSISTED_KEYS = ["language"];
+const PERSISTED_KEYS = ["tokens"];
 const DEFAULT_STORE_DATA: StoreData = {
-  language: Localization.getLocales()[0].languageTag,
+  tokens: null,
 };
+
+export const COMPUTED_IS_SIGNED_IN = (state: StoreState) => !!state.tokens;
 
 export const useStore = create<StoreState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...DEFAULT_STORE_DATA,
 
       // Actions
-      setLanguage(language) {
-        set({ language });
+      login(tokens) {
+        set({ tokens: tokensToConfig(tokens) });
+      },
+
+      async logout() {
+        const { tokens } = get();
+
+        if (!tokens) return;
+
+        await revokeTokens(tokens);
+        set({ tokens: null });
       },
     }),
 

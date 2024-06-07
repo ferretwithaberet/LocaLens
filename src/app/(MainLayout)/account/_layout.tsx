@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 
 const AccountLayout = () => {
-  return <Stack initialRouteName="login" />;
+  return <Stack initialRouteName="profile" />;
 };
 
 export default AccountLayout;

@@ -5,7 +5,7 @@ import * as Location from "expo-location";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router";
 import { View, Colors } from "react-native-ui-lib";
-import MapView from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 const IndexPage = () => {
   const safeAreaInsets = useSafeAreaInsets();
@@ -33,6 +33,7 @@ const IndexPage = () => {
       <MapView
         className="flex-1"
         mapPadding={{ top: safeAreaInsets.top, bottom: 0, left: 0, right: 0 }}
+        provider={PROVIDER_GOOGLE}
         showsUserLocation={permissionStatus?.granted}
       />
     </View>

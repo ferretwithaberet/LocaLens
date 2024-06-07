@@ -1,39 +1,58 @@
-import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
-import { View, TextField, Button } from "react-native-ui-lib";
-import { Stack } from "expo-router";
+import { View, Button } from "react-native-ui-lib";
+import { Redirect, Stack } from "expo-router";
+import { useAuthRequest, exchangeCodeAsync } from "expo-auth-session";
 
-import TouchableLink from "@/components/common/TouchableLink";
+import { useStore, COMPUTED_IS_SIGNED_IN } from "@/services/store";
+import { discovery, CLIENT_ID } from "@/services/auth";
 
+const REDIRECT_URI = "localens://account/login";
 const Login = () => {
-  const { t } = useTranslation();
+  const isSignedIn = useStore(COMPUTED_IS_SIGNED_IN);
+  const login = useStore((state) => state.login);
+  const [request, , promptAsync] = useAuthRequest(
+    {
+      clientId: CLIENT_ID,
+      scopes: ["read", "write"],
+      redirectUri: REDIRECT_URI,
+    },
+    discovery
+  );
+
+  if (isSignedIn) return <Redirect href="/account/profile" />;
+
+  const handleLogin = async () => {
+    if (!request) return;
+
+    const response = await promptAsync();
+    if (response.type !== "success") return;
+
+    const tokens = await exchangeCodeAsync(
+      {
+        clientId: CLIENT_ID,
+        scopes: ["read", "write"],
+        code: response.params.code,
+        extraParams: request.codeVerifier
+          ? { code_verifier: request.codeVerifier }
+          : undefined,
+        redirectUri: REDIRECT_URI,
+      },
+      discovery
+    );
+
+    login(tokens);
+  };
 
   return (
     <ScrollView contentContainerStyle={{ flex: 1 }}>
       <Stack.Screen options={{ headerShown: false }} />
 
       <View flex centerV className="p-12">
-        <TextField
-          preset="default"
-          placeholder={t("Account")}
-          floatingPlaceholder
+        <Button
+          label="Autentificare"
+          disabled={!request}
+          onPress={handleLogin}
         />
-
-        <TextField
-          preset="default"
-          placeholder={t("Password")}
-          floatingPlaceholder
-        />
-
-        <Button label="Login" />
-
-        <View center>
-          <TouchableLink textProps={{ text70: true }}>
-            Forgot password?
-          </TouchableLink>
-
-          <TouchableLink textProps={{ text70: true }}>Register</TouchableLink>
-        </View>
       </View>
     </ScrollView>
   );

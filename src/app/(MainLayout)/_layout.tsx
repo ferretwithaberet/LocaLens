@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { Tabs } from "expo-router";
 import { Colors, View } from "react-native-ui-lib";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -20,8 +19,6 @@ const makeTabIcon = (icon: IconProp) => {
 };
 
 const MainLayout = () => {
-  const { t } = useTranslation();
-
   return (
     <Tabs
       screenOptions={{
@@ -33,13 +30,13 @@ const MainLayout = () => {
     >
       <Tabs.Screen
         name="account"
-        options={{ title: t("tabs.account"), tabBarIcon: makeTabIcon(fasUser) }}
+        options={{ title: "Cont", tabBarIcon: makeTabIcon(fasUser) }}
       />
 
       <Tabs.Screen
         name="(navigate)"
         options={{
-          title: t("tabs.navigate"),
+          title: "Navigare",
           tabBarIcon: (props) => (
             <View className="-mt-[24px]">
               <View
@@ -49,7 +46,7 @@ const MainLayout = () => {
 
               <View
                 bg-$backgroundElevated
-                className=" absolute top-0 -left-[1px] mt-[24px] w-[70px] h-[70px]"
+                className="absolute top-0 -left-[1px] mt-[24px] w-[70px] h-[70px]"
               />
 
               <View
@@ -70,7 +67,7 @@ const MainLayout = () => {
 
       <Tabs.Screen
         name="settings"
-        options={{ title: t("tabs.settings"), tabBarIcon: makeTabIcon(fasCog) }}
+        options={{ title: "Setări", tabBarIcon: makeTabIcon(fasCog) }}
       />
     </Tabs>
   );

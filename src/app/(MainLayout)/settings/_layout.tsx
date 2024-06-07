@@ -1,1 +1,5 @@
-export { Stack as default } from "expo-router";
+import { Stack } from "expo-router";
+
+import { withProtected } from "@/utils/auth";
+
+export default withProtected(Stack);
