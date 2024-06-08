@@ -4,7 +4,11 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TokenResponseConfig } from "expo-auth-session";
 
-import { tokensToConfig, revokeTokens } from "@/services/auth";
+import {
+  tokensToConfig,
+  revokeTokens,
+  refreshTokens as _refreshTokens,
+} from "@/services/auth";
 
 type StoreData = {
   tokens: TokenResponseConfig | null;
@@ -13,6 +17,7 @@ type StoreData = {
 type StoreActions = {
   login: (tokens: TokenResponseConfig) => void;
   logout: () => void;
+  refreshTokens: () => Promise<void>;
 };
 
 type StoreState = StoreData & StoreActions;
@@ -41,6 +46,14 @@ export const useStore = create<StoreState>()(
 
         await revokeTokens(tokens);
         set({ tokens: null });
+      },
+
+      async refreshTokens() {
+        const { tokens } = get();
+
+        if (!tokens) return;
+
+        await _refreshTokens(tokens);
       },
     }),
 
