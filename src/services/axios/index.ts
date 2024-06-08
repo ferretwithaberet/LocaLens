@@ -1,8 +1,13 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
+import { BACKEND_URI } from "@/utils/constants";
 import { useStore } from "@/services/store";
 
-export const apiClient = axios.create({});
+const API_URI = `${BACKEND_URI}/api`;
+
+export const apiClient = axios.create({
+  baseURL: API_URI,
+});
 
 const addTokenToAxiosConfig = (config: InternalAxiosRequestConfig) => {
   if (config?.headers?.authorization) return config;
@@ -18,7 +23,7 @@ const addTokenToAxiosConfig = (config: InternalAxiosRequestConfig) => {
   return config;
 };
 
-axios.interceptors.request.use(async (config) => {
+apiClient.interceptors.request.use(async (config) => {
   const { refreshTokens } = useStore.getState();
   await refreshTokens();
 

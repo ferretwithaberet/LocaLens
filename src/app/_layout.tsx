@@ -5,7 +5,9 @@ import { Colors } from "react-native-ui-lib";
 import { StatusBar } from "expo-status-bar";
 import { ThemeProvider } from "@react-navigation/native";
 import { Slot } from "expo-router";
+import { QueryClientProvider } from "@tanstack/react-query";
 
+import { queryClient } from "@/services/react-query";
 import { APP_COLOR_SCHEME } from "@/utils/constants";
 
 // TODO: Check theme colors on real device
@@ -52,11 +54,13 @@ const RootLayout = () => {
   };
 
   return (
-    <ThemeProvider value={theme}>
-      <StatusBar style={APP_COLOR_SCHEME === "dark" ? "light" : "dark"} />
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider value={theme}>
+        <StatusBar style={APP_COLOR_SCHEME === "dark" ? "light" : "dark"} />
 
-      <Slot />
-    </ThemeProvider>
+        <Slot />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 

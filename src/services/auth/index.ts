@@ -7,8 +7,9 @@ import {
 } from "expo-auth-session";
 import { DateTime } from "luxon";
 
-const AUTHORIZATION_SERVER = process.env
-  .EXPO_PUBLIC_AUTHORIZATION_SERVER as string;
+import { BACKEND_URI } from "@/utils/constants";
+
+const AUTHORIZATION_SERVER = `${BACKEND_URI}/o`;
 
 export const CLIENT_ID = "Lag630laEbpoEKixgj8JslGC0hOO0iu7gNKeNg8p";
 
@@ -60,7 +61,7 @@ export const revokeTokens = async (tokens: TokenResponseConfig) => {
 };
 
 type RefreshTokenOptions = {
-  minValiditySeconds?: Number;
+  minValiditySeconds?: number;
 };
 
 export const refreshTokens = async (
@@ -69,18 +70,19 @@ export const refreshTokens = async (
 ) => {
   const { minValiditySeconds = 60 } = options ?? {};
 
-  const tokenResponse = TokenResponse.fromQueryParams(tokens);
+  const tokenResponse = new TokenResponse(tokens);
 
   const expiryDate = DateTime.fromSeconds(tokenResponse.issuedAt).plus({
     seconds: tokenResponse.expiresIn,
   });
 
-  if (expiryDate.diffNow("second").seconds < -minValiditySeconds)
+  if (expiryDate.diffNow("second").seconds > minValiditySeconds)
     return tokenResponse;
 
   return await tokenResponse.refreshAsync(
     {
       clientId: CLIENT_ID,
+      scopes: ["read", "write"],
     },
     discovery
   );

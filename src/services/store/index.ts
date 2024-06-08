@@ -36,7 +36,9 @@ export const useStore = create<StoreState>()(
 
       // Actions
       login(tokens) {
-        set({ tokens: tokensToConfig(tokens) });
+        const tokenConfig = tokensToConfig(tokens);
+
+        set({ tokens: tokenConfig });
       },
 
       async logout() {

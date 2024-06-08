@@ -40,8 +40,6 @@ const Login = () => {
       discovery
     );
 
-    if (__DEV__) console.log("TOKENS", tokens);
-
     login(tokens);
   };
 

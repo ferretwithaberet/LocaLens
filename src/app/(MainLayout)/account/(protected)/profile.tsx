@@ -1,12 +1,17 @@
+import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { View, Text, Button, Colors } from "react-native-ui-lib";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser as fasUser } from "@fortawesome/free-solid-svg-icons";
 
 import { useStore } from "@/services/store";
+import { getMeQueryOptions } from "@/services/react-query/resources/user";
+import LoaderView from "@/components/common/LoaderView";
 
 const Account = () => {
   const logout = useStore((state) => state.logout);
+
+  const meQuery = useQuery(getMeQueryOptions());
 
   return (
     <View flex>
@@ -19,7 +24,13 @@ const Account = () => {
           size={128}
         />
 
-        <Text text50>Meow</Text>
+        <Text text50>
+          {!meQuery.isFetching
+            ? !meQuery.isError
+              ? meQuery.data?.username
+              : "Necunoscut"
+            : "Se încarcă..."}
+        </Text>
 
         <Button
           color={Colors.$textDefault}
