@@ -31,3 +31,15 @@ apiClient.interceptors.request.use(async (config) => {
 
   return newConfig;
 });
+
+if (__DEV__)
+  apiClient.interceptors.request.use((config) => {
+    console.info(
+      "Request",
+      config.method?.toUpperCase(),
+      config.url,
+      config.params ?? {}
+    );
+
+    return config;
+  });
