@@ -24,7 +24,7 @@ export const getPointTypesListQueryOptions = (filter?: Record<string, any>) =>
   infiniteQueryOptions({
     queryKey: ["point-types", filter],
     queryFn: ({ pageParam }) => getPointTypes({ ...filter, page: pageParam }),
-    ...getDefaultPageParams(0),
+    ...getDefaultPageParams(1),
   });
 
 export const getPointType = async (pointTypeId: number) => {

@@ -39,7 +39,7 @@ export const getPointsListQueryOptions = (filter?: Record<string, any>) =>
   infiniteQueryOptions({
     queryKey: ["points", filter],
     queryFn: ({ pageParam }) => getPoints({ ...filter, page: pageParam }),
-    ...getDefaultPageParams(0),
+    ...getDefaultPageParams(1),
   });
 
 export type VotePointPayload = {
