@@ -3,7 +3,11 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useIsFocused } from "@react-navigation/native";
-import { useInfiniteQuery, keepPreviousData } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  keepPreviousData,
+  useQuery,
+} from "@tanstack/react-query";
 import * as Location from "expo-location";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router";
@@ -39,6 +43,7 @@ import {
 import PointForm from "@/components/forms/PointForm";
 import CustomRating from "@/components/common/CustomRating";
 import { useStore, COMPUTED_IS_SIGNED_IN } from "@/services/store";
+import { getUserSettingsQueryOptions } from "@/services/react-query/resources/user-settings";
 
 type VotingProps = {
   value?: boolean | null;
@@ -82,6 +87,7 @@ const IndexPage = () => {
 
   const isSignedIn = useStore(COMPUTED_IS_SIGNED_IN);
 
+  const [hasShownPoint, setHasShownPoint] = useState(false);
   const [initialRegion, setInitialRegion] = useState<Region | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
   const debouncedRegion = useDebounce(region, 300);
@@ -89,10 +95,13 @@ const IndexPage = () => {
   const pointCreationForm = useForm<PointCreateValues>();
   const [selectedPointId, setSelectedPointId] = useState<number | null>(null);
 
+  const userSettingsQuery = useQuery(getUserSettingsQueryOptions());
+
   const pointsQuery = useInfiniteQuery({
     ...getPointsListQueryOptions({
       lat: debouncedRegion?.latitude,
       long: debouncedRegion?.longitude,
+      computed_rating__gte: userSettingsQuery.data?.minimum_rating,
     }),
     enabled: !!debouncedRegion,
     placeholderData: keepPreviousData,
@@ -116,6 +125,24 @@ const IndexPage = () => {
 
     requestPermission();
   }, [permissionStatus]);
+
+  useEffect(() => {
+    if (hasShownPoint) return;
+
+    if (!pointsQuery.data) return;
+
+    setHasShownPoint(true);
+
+    if (!userSettingsQuery.data?.find_closest_point) return;
+
+    const marker = allPoints?.find(
+      (point) => point.type.id === userSettingsQuery.data.find_closest_point
+    );
+
+    if (!marker) return;
+
+    setSelectedPointId(marker.id);
+  }, [pointsQuery.isLoading]);
 
   const handleGetInitialRegion = async () => {
     const location = await Location.getCurrentPositionAsync();

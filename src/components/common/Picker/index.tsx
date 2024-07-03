@@ -148,6 +148,7 @@ const Picker = forwardRef((props: PickerProps, ref) => {
       placeholder,
       floatingPlaceholder,
       readonly,
+      retainValidationSpace: false,
     });
   };
 

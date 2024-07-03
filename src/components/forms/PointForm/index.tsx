@@ -42,6 +42,7 @@ const PointForm = (props: PointFormProps) => {
             value={value}
             placeholder="Nume"
             floatingPlaceholder
+            retainValidationSpace={false}
             validationMessage={getFieldErrorMessage(form, "name")}
             onChangeText={onChange}
             onBlur={onBlur}

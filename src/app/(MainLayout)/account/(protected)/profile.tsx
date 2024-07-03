@@ -6,7 +6,6 @@ import { faUser as fasUser } from "@fortawesome/free-solid-svg-icons";
 
 import { useStore } from "@/services/store";
 import { getMeQueryOptions } from "@/services/react-query/resources/user";
-import LoaderView from "@/components/common/LoaderView";
 
 const Account = () => {
   const logout = useStore((state) => state.logout);
@@ -33,7 +32,7 @@ const Account = () => {
         </Text>
 
         <Button
-          color={Colors.$textDefault}
+          color={Colors.white}
           backgroundColor={Colors.grey20}
           label="Delogare"
           onPress={() => logout()}

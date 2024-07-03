@@ -1,12 +1,19 @@
+import { useEffect } from "react";
 import { Stack } from "expo-router";
-import { View, SegmentedControl } from "react-native-ui-lib";
-import { useForm, Controller } from "react-hook-form";
+import { View, Button } from "react-native-ui-lib";
+import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 
 import { Theme } from "@/utils/enums";
-import CustomField from "@/components/common/CustomField";
+import {
+  getUserSettingsQueryOptions,
+  useUpdateUserSettingsMutation,
+} from "@/services/react-query/resources/user-settings";
+import SettingsForm from "@/components/forms/SettingsForm";
+import QueryStateView from "@/components/common/QueryStateView";
 
 type SettingsFormValues = {
-  theme: Theme;
+  theme?: Theme;
   findClosestPoint?: Number;
   minimumRating?: Number;
 };
@@ -18,31 +25,42 @@ const Settings = () => {
     },
   });
 
-  return (
-    <View padding-s4>
-      <Stack.Screen options={{ title: "Setări" }} />
+  const userSettingsQuery = useQuery(getUserSettingsQueryOptions());
 
-      <Controller
-        name="theme"
-        control={form.control}
-        rules={{
-          required: true,
-        }}
-        render={({ field: { value, onChange } }) => (
-          <CustomField label="Temă">
-            <SegmentedControl
-              initialIndex={value == null ? 0 : value - 1}
-              segments={[
-                { label: "Auto" },
-                { label: "Luminos" },
-                { label: "Întunecat" },
-              ]}
-              onChangeIndex={(index) => onChange(index + 1)}
+  const updateUserSettingsMutation = useUpdateUserSettingsMutation();
+
+  useEffect(() => {
+    if (!userSettingsQuery.data) return;
+
+    Object.entries(userSettingsQuery.data).map(([key, value]) =>
+      form.setValue(key as any, value)
+    );
+  }, [userSettingsQuery.data]);
+
+  return (
+    <QueryStateView
+      isLoading={userSettingsQuery.isLoading}
+      isError={userSettingsQuery.isError}
+    >
+      {() => (
+        <View flex padding-s4 paddingB-s8>
+          <Stack.Screen options={{ title: "Setări" }} />
+
+          <View flex>
+            <View flex gap-s8>
+              <SettingsForm form={form} />
+            </View>
+
+            <Button
+              label="Salvează"
+              onPress={form.handleSubmit((data) => {
+                updateUserSettingsMutation.mutate({ payload: data });
+              })}
             />
-          </CustomField>
-        )}
-      />
-    </View>
+          </View>
+        </View>
+      )}
+    </QueryStateView>
   );
 };
 

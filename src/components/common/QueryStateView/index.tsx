@@ -80,7 +80,7 @@ const QueryStateView = (props: QueryStateViewProps) => {
               {showRefresh ? refreshButton : null}
             </IconStateView>
           ) : (
-            renderComponentOrElement(children)
+            renderComponentOrElement(children, {})
           )}
         </>
       )}

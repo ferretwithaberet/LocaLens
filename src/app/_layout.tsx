@@ -11,7 +11,7 @@ import { queryClient } from "@/services/react-query";
 import { APP_COLOR_SCHEME } from "@/utils/constants";
 
 // TODO: Check theme colors on real device
-Colors.loadDesignTokens({ primaryColor: "#72a82f" });
+Colors.loadDesignTokens({ primaryColor: "#94df53" });
 Colors.loadSchemes({
   light: {
     $backgroundDefault: Colors.white,

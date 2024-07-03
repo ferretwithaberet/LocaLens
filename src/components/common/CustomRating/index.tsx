@@ -1,7 +1,9 @@
+import { useMemo } from "react";
 import { View, Text, Colors } from "react-native-ui-lib";
 import { AirbnbRating, TapRatingProps } from "react-native-ratings";
 
 type CustomRatingProps = Omit<TapRatingProps, "reviews" | "defaultRating"> & {
+  label?: string;
   rating?: number | string | null;
   defaultValue?: number | null;
   unSelectedColor?: string;
@@ -15,11 +17,14 @@ const parseRating = (rating: CustomRatingProps["rating"]) => {
   return parseFloat(rating);
 };
 
-const REVIEWS = new Proxy([], {
-  get: () => "Nota ta",
-});
 const CustomRating = (props: CustomRatingProps) => {
-  const { rating, defaultValue, ...restProps } = props;
+  const { label = "Nota ta", rating, defaultValue, ...restProps } = props;
+
+  const reviews = useMemo(() => {
+    return new Proxy([], {
+      get: () => label,
+    });
+  }, [label]);
 
   return (
     <View row>
@@ -38,7 +43,7 @@ const CustomRating = (props: CustomRatingProps) => {
       <View flex>
         <AirbnbRating
           defaultRating={defaultValue != null ? defaultValue : 0}
-          reviews={REVIEWS}
+          reviews={reviews}
           reviewColor={Colors.$textDefault}
           selectedColor={Colors.yellow40}
           unSelectedColor={Colors.grey30}
