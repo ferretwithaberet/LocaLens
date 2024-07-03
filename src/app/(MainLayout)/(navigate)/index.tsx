@@ -38,6 +38,7 @@ import {
 } from "@/services/react-query/resources/points";
 import PointForm from "@/components/forms/PointForm";
 import CustomRating from "@/components/common/CustomRating";
+import { useStore, COMPUTED_IS_SIGNED_IN } from "@/services/store";
 
 type VotingProps = {
   value?: boolean | null;
@@ -78,6 +79,8 @@ const IndexPage = () => {
   const isFocused = useIsFocused();
   const [permissionStatus, requestPermission] =
     Location.useForegroundPermissions();
+
+  const isSignedIn = useStore(COMPUTED_IS_SIGNED_IN);
 
   const [initialRegion, setInitialRegion] = useState<Region | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
@@ -173,6 +176,7 @@ const IndexPage = () => {
                       longitude: point.location[0],
                       latitude: point.location[1],
                     }}
+                    anchor={{ x: 0.5, y: 0.5 }}
                     onPress={() => setSelectedPointId(point.id)}
                   >
                     <View centerH>
@@ -206,21 +210,23 @@ const IndexPage = () => {
           <FontAwesomeIcon icon={faPlus} color={Colors.red40} size={32} />
         </View>
 
-        <View padding-s4 className="absolute bottom-0 right-0">
-          <Button
-            round
-            iconSource={() => (
-              <View padding-s2>
-                <FontAwesomeIcon
-                  icon={faPlus}
-                  size={32}
-                  color={Colors.$textDefaultLight}
-                />
-              </View>
-            )}
-            onPress={() => setIsCreate(true)}
-          />
-        </View>
+        {isSignedIn ? (
+          <View padding-s4 className="absolute bottom-0 right-0">
+            <Button
+              round
+              iconSource={() => (
+                <View padding-s2>
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    size={32}
+                    color={Colors.$textDefaultLight}
+                  />
+                </View>
+              )}
+              onPress={() => setIsCreate(true)}
+            />
+          </View>
+        ) : null}
 
         <Dialog
           containerStyle={{ marginBottom: 90 }}
@@ -248,6 +254,7 @@ const IndexPage = () => {
                     {
                       onSuccess: () => {
                         pointCreationForm.reset();
+                        setIsCreate(false);
                       },
                     }
                   )
