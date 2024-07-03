@@ -1,9 +1,12 @@
+import { LogBox } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 
 import { APP_COLOR_SCHEME } from "@/utils/constants";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+
+LogBox.ignoreAllLogs();
 
 // Configure rnui lib
 // @ts-ignore Only instance of require, will not install @types/node for this
